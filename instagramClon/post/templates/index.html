@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block title %}
+<title>
+    Posts
+</title>
+{% endblock title %}
+
+{% block content %}
+<h1>Posts</h1>
+<ul>
+{% for post in object_list %}
+    <div class="card" style="width: 18rem;">
+        <i>@{{request.user.username}}</i>
+        <img class="card-img-top" src="{{post.url_foto}}" alt="Card image cap">
+        <div class="card-body">
+            <div>
+                
+            </div>
+            <hr>
+            <p class="card-text">{{post.description}}</p>
+        </div>
+    </div>
+{% empty %}
+    <li>No posts yet.</li>
+{% endfor %}
+</ul>
+{% endblock content %}

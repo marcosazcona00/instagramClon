@@ -6,9 +6,16 @@ from django.contrib import messages
 from .helpers.helpers import check_login
 from django.shortcuts import render,redirect
 from django.views.decorators.csrf import csrf_exempt
+from .service.user_service import UserService
 from django.contrib.auth import authenticate,login, logout
 
+# Mi flujo es <Controlador> <-> <Servicio> <-> <Repositorio> <-> <Modelo>
+# Elijo que siempre a servicio por si cambia un poco la logica de algo (registro por ejemplo), el repositorio no hace falta tocarlo.
+
 class SignUpView(View):
+    def __init__(self):
+        self._user_service = UserService()
+
     @check_login
     def get(self,request):
         return render(request, 'signup.html', {'form': SignUpForm()})
@@ -17,7 +24,7 @@ class SignUpView(View):
         # print(request.data)
         form = SignUpForm(request.POST)
         if form.is_valid():
-            User.objects.create_user(form.cleaned_data['username'],form.cleaned_data['email'], form.cleaned_data['password'])
+            self._user_service.register_user(form.cleaned_data)
             return redirect(reverse('user:login'))
         return render(request, 'signup.html', {'form': form})
 

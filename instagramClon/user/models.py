@@ -15,23 +15,23 @@ class User(UserDjango):
         '''
         return self.id == user.id
 
-    def has_follow_to(self,user):
+    def is_followed_by(self,user):
         '''
-            Check if this user follow an user
+            Check if this user is already followed by the requested user
             user: <User: Model>
             Return: Boolean
         '''
-        # Se fija si entre los que sigue esta el usuario al que le quiere dar el follow
-        return self.following.filter(to_user = user).exists()
+        # Se fija si entre sus seguidores esta el usuario al que le quiere dar el follow
+        return self.follower.filter(from_user = user).exists()
         
-    def add_follow(self,user_to_follow):   
+    def add_follower(self,follower_user):   
         '''
-            Add a follow to an user
+            Add a follower to this user
             user_to_follow: <User: Model>
             Return: Boolean
         '''
-        if not self._same_user(user_to_follow) and not self.has_follow_to(user_to_follow):
-            Follow.objects.create(from_user = self, to_user = user_to_follow)
+        if not self._same_user(follower_user) and not self.is_followed_by(follower_user):
+            Follow.objects.create(from_user = follower_user, to_user = self)
             return True
         return False
         
